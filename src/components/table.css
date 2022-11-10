@@ -1,0 +1,16 @@
+table {
+  width: 100%;
+  background-color: rgb(228, 228, 228);
+}
+
+table th {
+  padding: 5px;
+  font-size: 20px;
+  border-bottom: 1px solid black;
+}
+
+table td {
+  padding: 5px;
+  border-bottom: 0.5px solid gray;
+  text-align: center;
+}
