@@ -1,4 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+// redux
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  setData,
+  setFetching
+} from './redux/tableReducer'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // material ui
 import Tabs from '@mui/material/Tabs'
@@ -13,40 +22,33 @@ import reactLogo from './assets/react.svg'
 
 function App() {
   const [currentTab, setCurrentTab] = useState(0)
-  const [lista, setLista] = useState([
-    {
-      name: 'Manuel López',
-      address: 'Km 8 carretera sur',
-      dateOfBirth: '1997-05-19',
-      phone: '57886421',
-      email: 'lmanuelex@gmail.com'
-    },
-    {
-      name: 'Gabriel Gimenez',
-      address: 'Km 15 carretera sur',
-      dateOfBirth: '1990-05-19',
-      phone: '55886644',
-      email: 'ggimenez@gmail.com'
-    },
-    {
-      name: 'Leonel Messi',
-      address: 'Km 13 carretera masaya',
-      dateOfBirth: '1987-05-19',
-      phone: '88669944',
-      email: 'messi@gmail.com'
-    },
-    {
-      name: 'Xavi Hernandez',
-      address: 'Frente al camp nou',
-      dateOfBirth: '1977-05-19',
-      phone: '88997744',
-      email: 'xavi@gmail.com'
-    },
-  ])
+  const dispatch = useDispatch()
 
   const handleClickTab = (event, newValue) => {
     setCurrentTab(newValue)
   }
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(json => {
+        let users = json.map(item => {
+          return {
+            id: item.id,
+            name: item.name,
+            username: item.username,
+            phone: item.phone,
+            email: item.email,
+            city: item.address.city
+          }
+        })
+
+        dispatch(setData(users))
+      })
+      .catch(error => {
+        console.log('error cargando datos del api: ', error)
+      })
+  }, [])
 
   return (
     <Box className="App">
@@ -56,8 +58,8 @@ function App() {
           <Tab label='Tab 2' id='mysimple-tabpanel-1' aria-controls='mysimple-tab-1'></Tab>
         </Tabs>
       </div>
-      <MyTab value={currentTab} index={0} data={lista} />
-      <MyTab value={currentTab} index={1} data={lista} />
+      <MyTab value={currentTab} index={0} />
+      <MyTab value={currentTab} index={1} />
     </Box>
   )
 }

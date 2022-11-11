@@ -1,15 +1,28 @@
 import { useState } from 'react'
+import Button from 'react-bootstrap/Button';
+
+
+// redux
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  deleteItemById,
+  setEditingRow,
+  updateItem
+} from '../redux/tableReducer'
 
 export const ItemTable = ({
-  index,
   item
 }) => {
+
+  const isEditingFromRedux = useSelector((state) => state.tableReducer.isEditing)
+  const dispatch = useDispatch()
 
   const [isEditing, setIsEditing] = useState(false)
   const [localItem, setLocalItem] = useState(item)
 
   const beginEdit = () => {
     setIsEditing(true)
+    setLocalItem(item)
   }
 
   const cancelEdit = () => {
@@ -24,74 +37,93 @@ export const ItemTable = ({
     })
   }
 
+  const onSubmit = (e) => {
+    console.log('submit')
+    e.preventDefault()
+    setIsEditing(false)
+    dispatch(updateItem(localItem))
+  }
+
   return (
     <tr>
       {
         isEditing 
         ? <>
-          <td>
-            <input 
-              value={ localItem.name }
-              onChange={handleChangeInput}
-              placeholder='type the name' 
-              type='text' 
-              name='name' 
-              maxLength={50} 
-              required 
-            />
-          </td>
-          <td>
-            <input 
-              value={ localItem.address }
-              onChange={handleChangeInput}
-              placeholder='type the address' 
-              type='text' 
-              name='address' 
-              maxLength={250} 
-              required />
-          </td>
-          <td>
-            <input 
-              value={ localItem.dateOfBirth }
-              onChange={handleChangeInput}
-              placeholder='choose the date of birth' 
-              type='date' 
-              name='dateOfBirth' 
-              required />
-          </td>
-          <td>
-            <input 
-              value={ localItem.phone }
-              onChange={handleChangeInput}
-              placeholder='type the telephone' 
-              type='tel' 
-              name='phone' 
-              maxLength={10} 
-              required />
-          </td>
-          <td>
-            <input 
-              value={ localItem.email }
-              onChange={handleChangeInput}
-              placeholder='type the email' 
-              type='email' 
-              name='email' 
-              required />
-          </td>
-          <td>
-            <button>Guardar</button>
-            <button onClick={ cancelEdit }>Cancelar</button>
-          </td>  
+            <td>
+              <form id={`frm-${item.id}`} onSubmit={onSubmit}>
+              </form>
+              <input 
+                value={ localItem.name }
+                onChange={handleChangeInput}
+                placeholder='type the name' 
+                type='text' 
+                name='name' 
+                maxLength={50} 
+                required 
+                form={`frm-${item.id}`}
+              />
+            </td>
+            <td>
+              <input 
+                value={ localItem.username }
+                onChange={handleChangeInput}
+                placeholder='type the username' 
+                type='text' 
+                name='username' 
+                maxLength={15} 
+                required 
+                form={`frm-${item.id}`}
+                />
+            </td>
+            <td>
+              <input 
+                value={ localItem.phone }
+                onChange={handleChangeInput}
+                placeholder='type the phone' 
+                type='tel' 
+                name='phone' 
+                maxLength={15} 
+                required 
+                form={`frm-${item.id}`}
+                />
+            </td>
+            <td>
+              <input 
+                value={ localItem.email }
+                onChange={handleChangeInput}
+                placeholder='type the email' 
+                type='email' 
+                name='email' 
+                required 
+                form={`frm-${item.id}`}
+                />
+            </td>
+            <td>
+              <input 
+                value={ localItem.city }
+                onChange={handleChangeInput}
+                placeholder='type the city' 
+                type='text' 
+                name='city' 
+                maxLength={50} 
+                required 
+                form={`frm-${item.id}`}
+                />
+            </td>
+            <td>
+              <Button className='btnGuardar' size="sm" as='input' variant='primary' form={`frm-${item.id}`} type='submit' value='Guardar' />
+              <Button size="sm" type="button" variant='secondary' onClick={ cancelEdit }>Cancelar</Button>
+            </td>  
         </>
         : <>
           <td>{ item.name }</td>
-          <td>{ item.address }</td>
-          <td>{ item.dateOfBirth }</td>
+          <td>{ item.username }</td>
           <td>{ item.phone }</td>
           <td>{ item.email }</td>
+          <td>{ item.city }</td>
           <td>
-            <button onClick={ beginEdit }>Editar</button>
-            <button>Eliminar</button>
+            <Button className='btnEditar' size="sm" variant='success' onClick={ () => beginEdit() }>Editar</Button>
+            <Button size="sm" variant='danger' onClick={ () => dispatch(deleteItemById(item.id)) }>Eliminar</Button>
           </td>        
         </>
         

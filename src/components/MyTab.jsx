@@ -3,11 +3,17 @@ import Typography from '@mui/material/Typography';
 import { ItemTable } from './ItemTable'
 import './table.css'
 
+import Table from 'react-bootstrap/Table';
+
+// redux
+import { useSelector } from 'react-redux'
+
 export const MyTab = ({
   value,
-  index,
-  data
+  index
 }) => {
+
+  const dataUsers = useSelector((state) => state.tableReducer.data)
 
   return (
     <div
@@ -18,25 +24,25 @@ export const MyTab = ({
     >
       {value === index && (
         <div>
-         <table>
+         <Table striped bordered hover>
           <thead>
             <tr>
               <th>Name</th>
-              <th>Address</th>
-              <th>Date of birth</th>
+              <th>Username</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>City</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {
-              data.map((item, indexItem) => {
-                return <ItemTable key={ indexItem } index={indexItem} item={item} />
+              dataUsers.map((item, itemIndex) => {
+                return <ItemTable key={ itemIndex } item={item} />
               })
             }
           </tbody>
-         </table>
+         </Table>
         </div>
       )}
     </div>
